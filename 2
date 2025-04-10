@@ -2,67 +2,99 @@ using System;
 
 public class RightTriangle
 {
-    public double A { get; }  // Первый катет
-    public double B { get; }  // Второй катет
+    /// Длина первого катета
+    public double CathetusA { get; }  // Свойство только для чтения - защита от изменений после создания
+    /// Длина второго катета
+    public double CathetusB { get; }  // Аналогично первому катету
 
+    // Основной конструктор класса
     public RightTriangle(double a, double b)
     {
+        // Валидация входных параметров
         if (a <= 0 || b <= 0)
-            throw new ArgumentException("Катеты должны быть положительными!");
+        {
+            throw new ArgumentException("Катеты должны быть положительными!");  // Защита от некорректных данных
+        }
 
-        A = a;
-        B = b;
+        CathetusA = a;  // Инициализация свойства после проверки
+        CathetusB = b;
     }
 
-    // Перегрузка оператора true/false для проверки треугоьника
-    public static bool operator true(RightTriangle t) => t.A > 0 && t.B > 0;
-    public static bool operator false(RightTriangle t) => t.A <= 0 || t.B <= 0;
+    // Перегрузка оператора true - определяет, когда треугольник считается "истинным" (валидным)
+    public static bool operator true(RightTriangle triangle)
+    {
+        return triangle.CathetusA > 0 && triangle.CathetusB > 0;  // Оба катета должны быть положительными
+    }
 
-    // Неявное преобразование в double (возвращает площадь)
-    public static implicit operator double(RightTriangle t) => t.A * t.B / 2;
+    // Перегрузка оператора false - обратная логика оператору true
+    public static bool operator false(RightTriangle triangle)
+    {
+        return triangle.CathetusA <= 0 || triangle.CathetusB <= 0;  // Хотя бы один катет неположительный
+    }
 
-    // Метод для вывода информации
-    public override string ToString() => $"Прямоугольный треугольник с катетами {A} и {B}";
+    // Неявное преобразование в double - позволяет использовать треугольник как число (площадь)
+    public static implicit operator double(RightTriangle triangle)
+    {
+        return triangle.CathetusA * triangle.CathetusB / 2;  // Формула площади прямоугольного треугольника
+    }
+
+    // Переопределение стандартного метода для строкового представления объекта
+    public override string ToString()
+    {
+        return $"Прямоугольный треугольник с катетами {CathetusA} и {CathetusB}";  // Информационная строка
+    }
 }
 
 class Program
 {
-    static double ReadPositiveDouble(string prompt)
+    // Метод для безопасного ввода положительного числа
+    private static double ReadPositiveDouble(string prompt)
     {
         double value;
         do
         {
-            Console.Write(prompt);
+            Console.Write(prompt);  // Вывод приглашения для ввода
         }
-        while (!double.TryParse(Console.ReadLine(), out value) || value <= 0);
+        while (!double.TryParse(Console.ReadLine(), out value) || value <= 0);  // Цикл, пока не введено корректное число
 
-        return value;
+        return value;  // Возврат проверенного значения
     }
 
+    // Точка входа в программу
     static void Main()
     {
-        try
+        try  // Обработка возможных исключений
         {
             Console.WriteLine("Введите параметры прямоугольного треугольника:");
+
+            // Ввод длин катетов с проверкой
             double a = ReadPositiveDouble("Длина первого катета: ");
             double b = ReadPositiveDouble("Длина второго катета: ");
 
+            // Создание экземпляра треугольника
             RightTriangle triangle = new RightTriangle(a, b);
 
+            // Вывод информации о треугольнике
             Console.WriteLine($"\n{triangle}");
-            Console.WriteLine($"Площадь треугольника: {(double)triangle}");
+            Console.WriteLine($"Площадь треугольника: {(double)triangle}");  // Использование неявного преобразования
 
+            // Проверка валидности через перегруженные операторы
             if (triangle)
+            {
                 Console.WriteLine("Треугольник валиден");
+            }
             else
-                Console.WriteLine("Треугольник невалиден");
+            {
+                Console.WriteLine("Треугольник невалиден");  // В текущей реализации сюда попасть невозможно
+            }
         }
-        catch (Exception ex)
+        catch (Exception ex)  // Обработка всех исключений
         {
-            Console.WriteLine($"Ошибка: {ex.Message}");
+            Console.WriteLine($"Ошибка: {ex.Message}");  // Вывод сообщения об ошибке
         }
 
+        // Завершение программы
         Console.WriteLine("\nНажмите любую клавишу для выхода...");
-        Console.ReadKey();
+        Console.ReadKey();  // Ожидание действия пользователя
     }
 }
