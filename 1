@@ -1,6 +1,5 @@
 using System;
 
-// Класс для проверки ввода данных
 public static class InputValidator
 {
     public static int ReadInt(string prompt)
@@ -16,76 +15,64 @@ public static class InputValidator
     }
 }
 
-// Базовый класс с тремя целочисленными полями
 public class ThreeNumbers
 {
-    protected int number1;
-    protected int number2;
-    protected int number3;
+    protected int _number1;
+    protected int _number2;
+    protected int _number3;
 
-    // Конструктор по умолчанию
     public ThreeNumbers()
     {
-        number1 = 0;
-        number2 = 0;
-        number3 = 0;
+        _number1 = 0;
+        _number2 = 0;
+        _number3 = 0;
     }
 
-    // Основной конструктор
     public ThreeNumbers(int num1, int num2, int num3)
     {
-        number1 = num1;
-        number2 = num2;
-        number3 = num3;
+        _number1 = num1;
+        _number2 = num2;
+        _number3 = num3;
     }
 
-    // Конструктор копирования
     public ThreeNumbers(ThreeNumbers source)
     {
-        number1 = source.number1;
-        number2 = source.number2;
-        number3 = source.number3;
+        _number1 = source._number1;
+        _number2 = source._number2;
+        _number3 = source._number3;
     }
 
-    // Метод для нахождения минимального значения
     public virtual int FindMin()
     {
-        return Math.Min(number1, Math.Min(number2, number3));
+        return Math.Min(_number1, Math.Min(_number2, _number3));
     }
 
-    // Перегрузка метода ToString()
     public override string ToString()
     {
-        return $"Числа: {number1}, {number2}, {number3}";
+        return $"Числа: {_number1}, {_number2}, {_number3}";
     }
 }
 
-// Дочерний класс - представляет координаты точки в 3D пространстве
 public class Point3D : ThreeNumbers
 {
-    // Конструкторы
     public Point3D() : base() { }
     public Point3D(int x, int y, int z) : base(x, y, z) { }
     public Point3D(Point3D source) : base(source) { }
 
-    // Свойства для доступа к полям с осмысленными именами
-    public int X { get => number1; set => number1 = value; }
-    public int Y { get => number2; set => number2 = value; }
-    public int Z { get => number3; set => number3 = value; }
+    public int X { get => _number1; set => _number1 = value; }
+    public int Y { get => _number2; set => _number2 = value; }
+    public int Z { get => _number3; set => _number3 = value; }
 
-    // Метод для вычисления расстояния до начала координат
     public double DistanceToOrigin()
     {
         return Math.Sqrt(X * X + Y * Y + Z * Z);
     }
 
-    // Метод для проверки, находится ли точка в первом октанте
     public bool IsInFirstOctant()
     {
         return X > 0 && Y > 0 && Z > 0;
     }
 
-    // Перегрузка метода ToString()
     public override string ToString()
     {
         return $"Точка 3D: X={X}, Y={Y}, Z={Z}";
@@ -98,36 +85,32 @@ class Program
     {
         Console.WriteLine("=== Тестирование базового класса ThreeNumbers ===");
 
-        // Ввод данных с проверкой
         int num1 = InputValidator.ReadInt("Введите первое число: ");
         int num2 = InputValidator.ReadInt("Введите второе число: ");
         int num3 = InputValidator.ReadInt("Введите третье число: ");
 
-        // Создание объектов базового класса
         ThreeNumbers numbers1 = new ThreeNumbers(num1, num2, num3);
-        ThreeNumbers numbers2 = new ThreeNumbers(numbers1); // Конструктор копирования
+        ThreeNumbers numbers2 = new ThreeNumbers(numbers1);
 
         Console.WriteLine("\nРезультаты для базового класса:");
-        Console.WriteLine(numbers1.ToString());
+        Console.WriteLine(numbers1);
         Console.WriteLine($"Минимальное число: {numbers1.FindMin()}");
-        Console.WriteLine($"Копия: {numbers2.ToString()}");
+        Console.WriteLine($"Копия: {numbers2}");
 
         Console.WriteLine("\n=== Тестирование дочернего класса Point3D ===");
 
-        // Ввод координат точки
         int x = InputValidator.ReadInt("Введите координату X: ");
         int y = InputValidator.ReadInt("Введите координату Y: ");
         int z = InputValidator.ReadInt("Введите координату Z: ");
 
-        // Создание объектов дочернего класса
         Point3D point1 = new Point3D(x, y, z);
-        Point3D point2 = new Point3D(point1); // Конструктор копирования
+        Point3D point2 = new Point3D(point1);
 
         Console.WriteLine("\nРезультаты для дочернего класса:");
-        Console.WriteLine(point1.ToString());
+        Console.WriteLine(point1);
         Console.WriteLine($"Расстояние до начала координат: {point1.DistanceToOrigin():F2}");
         Console.WriteLine($"Находится в первом октанте: {point1.IsInFirstOctant()}");
-        Console.WriteLine($"Копия точки: {point2.ToString()}");
+        Console.WriteLine($"Копия точки: {point2}");
 
         Console.WriteLine("\nНажмите любую клавишу для выхода...");
         Console.ReadKey();
