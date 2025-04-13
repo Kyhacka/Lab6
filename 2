@@ -1,4 +1,21 @@
-using System;
+namespace Test3;
+
+public static class InputHelper
+{
+    public static double ReadPositiveDouble(string prompt)
+    {
+        double value;
+        do
+        {
+            Console.Write(prompt);
+        }
+        while (!double.TryParse(Console.ReadLine(), out value) || value <= 0);
+
+        return value;
+    }
+}
+///////////////////////////
+namespace Test3;
 
 public class RightTriangle
 {
@@ -8,65 +25,44 @@ public class RightTriangle
     public RightTriangle(double a, double b)
     {
         if (a <= 0 || b <= 0)
-        {
             throw new ArgumentException("Катеты должны быть положительными!");
-        }
 
         CathetusA = a;
         CathetusB = b;
     }
 
-    public static bool operator true(RightTriangle triangle)
-    {
-        return triangle.CathetusA > 0 && triangle.CathetusB > 0;
-    }
+    public static bool operator true(RightTriangle triangle) =>
+        triangle.CathetusA > 0 && triangle.CathetusB > 0;
 
-    public static bool operator false(RightTriangle triangle)
-    {
-        return triangle.CathetusA <= 0 || triangle.CathetusB <= 0;
-    }
+    public static bool operator false(RightTriangle triangle) =>
+        triangle.CathetusA <= 0 || triangle.CathetusB <= 0;
 
-    public static implicit operator double(RightTriangle triangle)
-    {
-        return triangle.CathetusA * triangle.CathetusB / 2;
-    }
+    public static implicit operator double(RightTriangle triangle) =>
+        triangle.CathetusA * triangle.CathetusB / 2;
 
-    public override string ToString()
-    {
-        return $"Прямоугольный треугольник с катетами {CathetusA} и {CathetusB}";
-    }
+    public override string ToString() =>
+        $"Прямоугольный треугольник с катетами {CathetusA} и {CathetusB}";
 }
+///////////////////////
+namespace Test3;
 
-class Program
+public class Program
 {
-    private static double ReadPositiveDouble(string prompt)
-    {
-        double value;
-        do
-        {
-            Console.Write(prompt);
-        }
-        while (!double.TryParse(Console.ReadLine(), out value) || value <= 0);
-        return value;
-    }
-
     static void Main()
     {
         try
         {
             Console.WriteLine("Введите параметры прямоугольного треугольника:");
-            double a = ReadPositiveDouble("Длина первого катета: ");
-            double b = ReadPositiveDouble("Длина второго катета: ");
+            double a = InputHelper.ReadPositiveDouble("Длина первого катета: ");
+            double b = InputHelper.ReadPositiveDouble("Длина второго катета: ");
 
-            RightTriangle triangle = new RightTriangle(a, b);
+            RightTriangle triangle = new(a, b);
 
             Console.WriteLine($"\n{triangle}");
             Console.WriteLine($"Площадь треугольника: {(double)triangle}");
 
             if (triangle)
-            {
                 Console.WriteLine("Треугольник валиден");
-            }
         }
         catch (Exception ex)
         {
