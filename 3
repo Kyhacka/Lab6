@@ -1,0 +1,117 @@
+namespace Test3;
+
+public static class InputHelper
+{
+    public static double ReadPositiveDouble(string prompt)
+    {
+        double value;
+        do
+        {
+            Console.Write(prompt);
+        }
+        while (!double.TryParse(Console.ReadLine(), out value) || value <= 0);
+
+        return value;
+    }
+}
+
+public class RightTriangle
+{
+    public double CathetusA { get; private set; }
+    public double CathetusB { get; private set; }
+
+    public RightTriangle(double a, double b)
+    {
+        if (a <= 0 || b <= 0)
+            throw new ArgumentException("Катеты должны быть положительными!");
+
+        CathetusA = a;
+        CathetusB = b;
+    }
+
+    // Унарные операции
+    public static RightTriangle operator ++(RightTriangle triangle)
+    {
+        triangle.CathetusA *= 2;
+        triangle.CathetusB *= 2;
+        return triangle;
+    }
+
+    public static RightTriangle operator --(RightTriangle triangle)
+    {
+        triangle.CathetusA /= 2;
+        triangle.CathetusB /= 2;
+        return triangle;
+    }
+
+    // Операции приведения типа
+    public static explicit operator double(RightTriangle triangle) =>
+        triangle ? triangle.CathetusA * triangle.CathetusB / 2 : -1;
+
+    public static implicit operator bool(RightTriangle triangle) =>
+        triangle.CathetusA > 0 && triangle.CathetusB > 0;
+
+    // Бинарные операции
+    public static bool operator <=(RightTriangle t1, RightTriangle t2) =>
+        (double)t1 <= (double)t2;
+
+    public static bool operator >=(RightTriangle t1, RightTriangle t2) =>
+        (double)t1 >= (double)t2;
+
+    public override string ToString() =>
+        $"Прямоугольный треугольник с катетами {CathetusA} и {CathetusB}";
+}
+
+public class Program
+{
+    static void Main()
+    {
+        try
+        {
+            Console.WriteLine("Введите параметры первого прямоугольного треугольника:");
+            double a1 = InputHelper.ReadPositiveDouble("Длина первого катета: ");
+            double b1 = InputHelper.ReadPositiveDouble("Длина второго катета: ");
+            RightTriangle triangle1 = new(a1, b1);
+
+            Console.WriteLine("\nВведите параметры второго прямоугольного треугольника:");
+            double a2 = InputHelper.ReadPositiveDouble("Длина первого катета: ");
+            double b2 = InputHelper.ReadPositiveDouble("Длина второго катета: ");
+            RightTriangle triangle2 = new(a2, b2);
+
+            Console.WriteLine("\nТестирование операций:");
+
+            // Тестирование унарных операций
+            Console.WriteLine("\nУнарные операции:");
+            Console.WriteLine($"Исходный треугольник 1: {triangle1}");
+
+            // Создаем копию для операции --
+            var tempTriangle = new RightTriangle(triangle1.CathetusA, triangle1.CathetusB);
+            tempTriangle--;
+            Console.WriteLine($"После --: {tempTriangle}");
+
+            // Создаем новую копию для операции ++
+            tempTriangle = new RightTriangle(triangle1.CathetusA, triangle1.CathetusB);
+            tempTriangle++;
+            Console.WriteLine($"После ++: {tempTriangle}");
+
+
+            // Тестирование операций приведения
+            Console.WriteLine("\nОперации приведения:");
+            Console.WriteLine($"Площадь треугольника 1: {(double)triangle1}");
+            Console.WriteLine($"Площадь треугольника 2: {(double)triangle2}");
+            Console.WriteLine($"Треугольник 1 существует: {(bool)triangle1}");
+
+            // Тестирование бинарных операций
+            Console.WriteLine("\nБинарные операции:");
+            Console.WriteLine($"Треугольник 1 {(triangle1 <= triangle2 ? "<=" : ">")} Треугольника 2 по площади");
+            Console.WriteLine($"Треугольник 1 {(triangle1 >= triangle2 ? ">=" : "<")} Треугольника 2 по площади");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка: {ex.Message}");
+        }
+
+        Console.WriteLine("\nНажмите любую клавишу для выхода...");
+        Console.ReadKey();
+    }
+}
